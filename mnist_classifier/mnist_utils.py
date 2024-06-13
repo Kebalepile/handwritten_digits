@@ -1,15 +1,15 @@
-"""
-Flask app that serves the trained model
-"""
-from flask import Flask, request, jsonify
+
+import io
 import numpy as np
+from PIL import Image
+from flask import request, jsonify
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
-from PIL import Image
-import io
 
-app = Flask(__name__)
-model = load_model('mnist_model.h5')
+
+def init_model(path):
+    model = load_model(path)
+    return model
 
 def prepare_image(image, target_size):
     if image.mode != 'L':
@@ -20,8 +20,8 @@ def prepare_image(image, target_size):
     image = image / 255.0
     return image
 
-@app.route('/predict', methods=['POST'])
 def predict():
+    model = init_model('../models/mnist_model.h5')
     if 'file' not in request.files:
         return jsonify({'error': 'No file provided'}), 400
     file = request.files['file']
@@ -32,6 +32,3 @@ def predict():
     prepared_image = prepare_image(image, target_size=(28, 28))
     prediction = model.predict(prepared_image).argmax(axis=-1)
     return jsonify({'digit': int(prediction[0])})
-
-if __name__ == '__main__':
-    app.run(debug=True)
