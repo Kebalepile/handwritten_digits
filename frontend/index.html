@@ -8,26 +8,46 @@
         #canvas {
             border: 1px solid black;
         }
+        .button-group {
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
     <h1>Draw a digit</h1>
     <canvas id="canvas" width="280" height="280"></canvas>
-    <button id="predictButton">Predict</button>
+    <div class="button-group">
+        <button id="pencilButton">Pencil</button>
+        <button id="ballPenButton">Ball Pen</button>
+        <button id="clearButton">Clear</button>
+        <button id="downloadButton">Download</button>
+        <button id="predictButton">Predict</button>
+    </div>
     <p id="result"></p>
 
     <script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         let drawing = false;
+        let lineWidth = 5;  // Default to pencil size
+
+        function initializeCanvas() {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        initializeCanvas();
 
         canvas.addEventListener('mousedown', () => drawing = true);
-        canvas.addEventListener('mouseup', () => drawing = false);
+        canvas.addEventListener('mouseup', () => {
+            drawing = false;
+            ctx.beginPath();
+        });
         canvas.addEventListener('mousemove', draw);
 
         function draw(event) {
             if (!drawing) return;
-            ctx.lineWidth = 10;
+            ctx.lineWidth = lineWidth;
             ctx.lineCap = 'round';
             ctx.strokeStyle = 'black';
             ctx.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
@@ -36,12 +56,54 @@
             ctx.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
         }
 
-        document.getElementById('predictButton').addEventListener('click', () => {
-            canvas.toBlob((blob) => {
-                const formData = new FormData();
-                formData.append('file', blob, 'digit.png');
+        document.getElementById('pencilButton').addEventListener('click', () => {
+            lineWidth = 5;  // Pencil size
+        });
 
-                fetch('/predict', {
+        document.getElementById('ballPenButton').addEventListener('click', () => {
+            lineWidth = 10;  // Ball pen size
+        });
+
+        document.getElementById('clearButton').addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            initializeCanvas();
+            ctx.beginPath();
+            document.getElementById('result').innerText = '';
+        });
+
+        document.getElementById('downloadButton').addEventListener('click', () => {
+            canvas.toBlob((blob) => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'digit.png';
+                link.click();
+            }, 'image/jpeg');
+        });
+
+        document.getElementById('predictButton').addEventListener('click', () => {
+            const imgData = canvas.toDataURL('image/png');
+            const img = new Image();
+            img.src = imgData;
+            img.onload = () => {
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = 28;
+                tempCanvas.height = 28;
+                tempCtx.drawImage(img, 0, 0, 28, 28);
+
+                const imageData = tempCtx.getImageData(0, 0, 28, 28);
+                const data = imageData.data;
+
+                const input = [];
+                for (let i = 0; i < data.length; i += 4) {
+                    const grayscale = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                    input.push(255 - grayscale);  // Invert colors
+                }
+
+                const formData = new FormData();
+                formData.append('input', JSON.stringify(input));
+
+                fetch('http://localhost:5000/predict', {
                     method: 'POST',
                     body: formData
                 })
@@ -50,7 +112,7 @@
                     document.getElementById('result').innerText = 'Predicted digit: ' + data.digit;
                 })
                 .catch(error => console.error('Error:', error));
-            });
+            };
         });
     </script>
 </body>

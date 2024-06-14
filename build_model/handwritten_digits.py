@@ -7,112 +7,62 @@ Original file is located at
     https://colab.research.google.com/drive/1f-gm9WgoB1LIzWqFcC3dMTlT3fkTaQxP
 """
 
-#install necessary libraries
-!pip install numpy tensorflow keras
+!pip install tensorflow
 
-# 2. Load and Data
-
-# Mount Goodle drive
-from google.colab import drive
-drive.mount('/content/drive')
-
-import shutil
 import os
-
-# Define paths
-source_folder = '/content/drive/MyDrive/MNIST_ORG.zip'  # Path to your source folder in Google Drive
-destination_folder = '/content/data/MNIST_ORG'  # Path to where you want to copy the folder in Colab
-
-
-import zipfile
-
-# Create the extraction directory if it doesn't exist
-os.makedirs(destination_folder, exist_ok=True)
-
-# Extract the zip file
-with zipfile.ZipFile(source_folder, 'r') as zip_ref:
-    zip_ref.extractall(destination_folder)
-    print(f'Successfully extracted files to {destination_folder}')
-
-# Read files in mnist_folder = "/content/data/MNIST_ORG"
-import struct
+import cv2
 import numpy as np
-import os
-
-def read_idx(filename):
-    with open(filename, 'rb') as f:
-        zero, data_type, dims = struct.unpack('>HBB', f.read(4))
-        shape = tuple(struct.unpack('>I', f.read(4))[0] for d in range(dims))
-        return np.frombuffer(f.read(), dtype=np.uint8).reshape(shape)
-
-# Define the path to the MNIST_ORG folder
-mnist_folder = "/content/data/MNIST_ORG"
-
-# Load training data
-train_images_path = os.path.join(mnist_folder, 'train-images.idx3-ubyte')
-train_labels_path = os.path.join(mnist_folder, 'train-labels.idx1-ubyte')
-
-train_images = read_idx(train_images_path)
-train_labels = read_idx(train_labels_path)
-
-# Load test data
-test_images_path = os.path.join(mnist_folder, 't10k-images.idx3-ubyte')
-test_labels_path = os.path.join(mnist_folder, 't10k-labels.idx1-ubyte')
-
-test_images = read_idx(test_images_path)
-test_labels = read_idx(test_labels_path)
-
-# Print the shapes to verify
-print(f'Training images shape: {train_images.shape}')  # Should print (60000, 28, 28)
-print(f'Training labels shape: {train_labels.shape}')  # Should print (60000,)
-print(f'Test images shape: {test_images.shape}')        # Should print (10000, 28, 28)
-print(f'Test labels shape: {test_labels.shape}')        # Should print (10000,)
-
-# train a model on the MNIST dataset:
-import numpy as np
+import matplotlib.pyplot as plt
 import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPooling2D
-from tensorflow.keras.utils import to_categorical
-
-# Use the data you loaded in the previous step
-x_train = train_images
-y_train = train_labels
-x_test = test_images
-y_test = test_labels
-
-# Preprocess the data
-x_train = x_train.reshape(-1, 28, 28, 1).astype('float32') / 255
-x_test = x_test.reshape(-1, 28, 28, 1).astype('float32') / 255
-y_train = to_categorical(y_train, 10)
-y_test = to_categorical(y_test, 10)
-
-# Build the model
-model = Sequential([
-    Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1)),
-    MaxPooling2D(pool_size=(2, 2)),
-    Flatten(),
-    Dense(128, activation='relu'),
-    Dense(10, activation='softmax')
-])
-
-# Compile the model
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-
-# Train the model
-model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=5, batch_size=200)
-
 from google.colab import files
 
+mnist = tf.keras.datasets.mnist
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+x_train = tf.keras.utils.normalize(x_train, axis=1)
+x_test = tf.keras.utils.normalize(x_test, axis=1)
+
+# build model
+model = tf.keras.models.Sequential()
+model.add(tf.keras.layers.Flatten(input_shape=(28,28)))
+model.add(tf.keras.layers.Dense(128, activation='relu'))
+model.add(tf.keras.layers.Dense(128, activation='relu'))
+model.add(tf.keras.layers.Dense(10, activation='softmax'))
+
+# compile model
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+# train model
+model.fit(x_train, y_train, epochs=3)
+
+# evaluate model
+val_loss, val_acc = model.evaluate(x_test, y_test)
+print(val_loss, val_acc)
+
+# # save model
+# model_name = 'handwritten_digits_reader.model'
+# model.save(model_name)
+# files.download(model_name)
+from google.colab import drive
+import os
+
+# Mount Google Drive
+drive.mount('/content/drive')
+
+# Define the path to save the model
+model_path = '/content/drive/My Drive/handwritten_digits_reader.model'
+
 # Save the model
+model.save(model_path)
 
-file_name  = 'mnist_model.h5'
-model.save(file_name)
+print(f"Model saved to {model_path}. You can download it from Google Drive.")
 
-# Download the model file
-files.download(file_name)
+# save model
+model_name = 'handwritten_digits_reader.keras'
+model.save(model_name)
+files.download(model_name)
 
-file_name = 'mnist_model.keras'
-model.save(file_name)
-# Download the model file
-files.download(file_name)
+model = tf.keras.models.load_model('handwritten_digits_reader.model')
+loss, accuracy = model.evaluate(x_test, y_test)
+print(loss)
+print(accuracy)
