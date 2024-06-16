@@ -1,9 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { initializeCanvas, clearCanvas, drawOnCanvas } from '../utils/canvas';
 
-const Canvas = () => {
+const Canvas = ({ clearTrigger, onClearComplete }) => {
   const canvasRef = useRef(null);
-  const [lineWidth, setLineWidth] = useState(5);
+  const [lineWidth, setLineWidth] = useState(10);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -37,6 +37,15 @@ const Canvas = () => {
     };
   }, [lineWidth]);
 
+  useEffect(() => {
+    if (clearTrigger) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      clearCanvas(canvas, ctx);
+      if (onClearComplete) onClearComplete();
+    }
+  }, [clearTrigger, onClearComplete]);
+
   const handleClear = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -53,7 +62,7 @@ const Canvas = () => {
         style={{ border: '1px solid black' }}
       ></canvas>
       <div className="button-group">
-        <button onClick={() => setLineWidth(5)}>Pencil</button>
+        {/* <button onClick={() => setLineWidth(5)}>Pencil</button> */}
         <button onClick={() => setLineWidth(10)}>Ball Pen</button>
         <button onClick={handleClear}>Clear</button>
       </div>
