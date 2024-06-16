@@ -1,66 +1,84 @@
-import React from 'react';
-import Canvas from './Canvas';
+import React, { useState, useEffect } from 'react'
+import ArithmeticQuiz from '../utils/ArithmeticQuiz' // Adjust the path based on your project structure
+import equations from '../data/basic_arithmetic_equations.json' // Import your JSON data
+import Canvas from './Canvas' // Assuming Canvas component is in the same directory
 
-const Game = ({ onBackToHome }) => {
+const Game = () => {
+  const [quizState, setQuizState] = useState('') // State to manage quiz messages
+  const [userAnswer, setUserAnswer] = useState('') // State to manage user's answer
+  const [currentQuestion, setCurrentQuestion] = useState('') // State to manage current quiz question
+  const [quiz, setQuiz] = useState(null) // State to manage the quiz instance
+
+  useEffect(() => {
+    startQuiz() // Start quiz when component mounts
+  }, [])
+
+  const updateQuizState = message => {
+    setQuizState(message)
+  }
+
+  const startQuiz = () => {
+    const newQuiz = new ArithmeticQuiz(equations, updateQuizState, getUserAnswer)
+    setQuiz(newQuiz)
+    setCurrentQuestion(newQuiz.getCurrentQuestion()) // Set initial quiz question
+  }
+
   const handlePredict = () => {
-    const canvas = document.getElementById('canvas');
-    const imgData = canvas.toDataURL('image/png');
-    const img = new Image();
-    img.src = imgData;
+    const canvas = document.getElementById('canvas')
+    const imgData = canvas.toDataURL('image/png')
+    const img = new Image()
+    img.src = imgData
     img.onload = () => {
-      const tempCanvas = document.createElement('canvas');
-      const tempCtx = tempCanvas.getContext('2d');
-      tempCanvas.width = 28;
-      tempCanvas.height = 28;
-      tempCtx.drawImage(img, 0, 0, 28, 28);
+      const tempCanvas = document.createElement('canvas')
+      const tempCtx = tempCanvas.getContext('2d')
+      tempCanvas.width = 28
+      tempCanvas.height = 28
+      tempCtx.drawImage(img, 0, 0, 28, 28)
 
-      const imageData = tempCtx.getImageData(0, 0, 28, 28);
-      const data = imageData.data;
+      const imageData = tempCtx.getImageData(0, 0, 28, 28)
+      const data = imageData.data
 
-      const input = [];
+      const input = []
       for (let i = 0; i < data.length; i += 4) {
-        const grayscale = (data[i] + data[i + 1] + data[i + 2]) / 3;
-        input.push(255 - grayscale); // Invert colors
+        const grayscale = (data[i] + data[i + 1] + data[i + 2]) / 3
+        input.push(255 - grayscale) // Invert colors
       }
 
-      const formData = new FormData();
-      formData.append('input', JSON.stringify(input));
+      const formData = new FormData()
+      formData.append('input', JSON.stringify(input))
 
       fetch('http://localhost:5000/predict', {
         method: 'POST',
-        body: formData,
+        body: formData
       })
-        .then((response) => response.json())
-        .then((data) => {
+        .then(response => response.json())
+        .then(data => {
           console.log('Predicted digit: ' + data.digit)
-          document.getElementById('result').innerText = 'Predicted digit: ' + data.digit;
+          setUserAnswer(data.digit.toString()) // Set predicted digit as user answer
+          if (quiz) {
+            quiz.askQuestion() // Ask the next question after predicting the digit
+            setCurrentQuestion(quiz.getCurrentQuestion())
+          }
         })
-        .catch((error) => console.error('Error:', error));
-    };
-  };
+        .catch(error => console.error('Error:', error))
+    }
+  }
 
-  const handleDownload = () => {
-    const canvas = document.getElementById('canvas');
-    canvas.toBlob((blob) => {
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'digit.png';
-      link.click();
-    }, 'image/jpeg');
-  };
+  const getUserAnswer = () => {
+    return userAnswer // Return current user answer from state
+  }
 
   return (
-    <div className="container">
-      <h2 id="problem">Problem: 5 - 3 = ?</h2>
+    <div className='container'>
+      <h2 id='problem'>Problem: {currentQuestion}</h2>
       <Canvas />
-      <div className="button-group">
-        <button onClick={handleDownload}>Download</button>
+      <div className='button-group'>
         <button onClick={handlePredict}>Predict</button>
       </div>
-      <div id="result"></div>
-      <button onClick={onBackToHome}>Back to Home</button>
+      <p>Predicted Answer: {userAnswer}</p> {/* Display predicted answer */}
+      <div id='result'>{quizState}</div> {/* Display quiz state message */}
     </div>
-  );
-};
+  )
+}
 
-export default Game;
+export default Game
