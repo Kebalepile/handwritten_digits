@@ -1,0 +1,39 @@
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #f0f0f0;
+}
+
+.app {
+  text-align: center;
+}
+
+.welcome h1 {
+  font-size: 2rem;
+}
+
+.container {
+  margin-top: 20px;
+}
+
+#canvas {
+  border: 1px solid black;
+}
+
+.button-group {
+  margin: 10px 0;
+}
+
+button {
+  margin: 5px;
+  background-color: rgb(51, 117, 238);
+  border:none;
+  color:white;
+  height:30px;
+  border-radius: 4px;
+  cursor: pointer;
+}
