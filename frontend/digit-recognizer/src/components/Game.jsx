@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import ArithmeticQuiz from '../utils/ArithmeticQuiz'; // Adjust the path based on your project structure
 import equations from '../data/basic_arithmetic_equations.json'; // Import your JSON data
 import Canvas from './Canvas'; // Assuming Canvas component is in the same directory
+import PropTypes from 'prop-types'
 
-const Game = () => {
+const Game = ({onBackToHome}) => {
   const [quizState, setQuizState] = useState(''); // State to manage quiz messages
   const [userAnswer, setUserAnswer] = useState(''); // State to manage user's answer
   const [currentQuestion, setCurrentQuestion] = useState(''); // State to manage current quiz question
@@ -55,7 +56,7 @@ const Game = () => {
       })
         .then(response => response.json())
         .then(data => {
-          console.log('Predicted digit: ' + data.digit);
+          // console.log('Predicted digit: ' + data.digit);
           setUserAnswer(data.digit); // Set predicted digit as user answer
           if (quiz) {
             const isCorrect = quiz.checkAnswer(data.digit); // Check the current question's answer
@@ -78,16 +79,17 @@ const Game = () => {
   };
 
   return (
-    <div className='container'>
+    <div className='containerr'>
+      <button onClick={onBackToHome}>Home</button>
       <h2 id='problem'>Problem: {currentQuestion}</h2>
-      <Canvas clearTrigger={clearCanvasTrigger} onClearComplete={handleClearComplete} />
-      <div className='button-group'>
-        <button onClick={handlePredict}>Predict</button>
-      </div>
+      <Canvas clearTrigger={clearCanvasTrigger} onClearComplete={handleClearComplete} handlePredict={handlePredict} />
       <p>Predicted Answer: {userAnswer}</p> {/* Display predicted answer */}
       <div id='result'>{quizState}</div> {/* Display quiz state message */}
     </div>
   );
 };
+Game.PropTypes = {
+  onBackToHome: PropTypes.func.isRequired
+}
 
 export default Game;

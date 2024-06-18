@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const Progress = ({ onBackToHome }) => {
   return (
@@ -8,6 +9,10 @@ const Progress = ({ onBackToHome }) => {
       <button onClick={onBackToHome}>Back to Home</button>
     </div>
   )
+}
+
+Progress.PropTypes = {
+  onBackToHome: PropTypes.func.isRequired
 }
 
 export default Progress

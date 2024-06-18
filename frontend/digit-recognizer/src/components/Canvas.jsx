@@ -1,73 +1,82 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { initializeCanvas, clearCanvas, drawOnCanvas } from '../utils/canvas';
+import React, { useRef, useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
+import { initializeCanvas, clearCanvas, drawOnCanvas } from '../utils/canvas'
 
-const Canvas = ({ clearTrigger, onClearComplete }) => {
-  const canvasRef = useRef(null);
-  const [lineWidth, setLineWidth] = useState(10);
+const Canvas = ({ clearTrigger, onClearComplete, handlePredict }) => {
+  const canvasRef = useRef(null)
+  const [lineWidth, ] = useState(10)
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    initializeCanvas(canvas, ctx);
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
+    initializeCanvas(canvas, ctx)
 
-    let drawing = false;
+    let drawing = false
 
     const handleMouseDown = () => {
-      drawing = true;
-    };
+      drawing = true
+    }
 
     const handleMouseUp = () => {
-      drawing = false;
-      ctx.beginPath();
-    };
+      drawing = false
+      ctx.beginPath()
+    }
 
-    const handleMouseMove = (event) => {
-      if (!drawing) return;
-      drawOnCanvas(event, canvas, ctx, lineWidth);
-    };
+    const handleMouseMove = event => {
+      if (!drawing) return
+      drawOnCanvas(event, canvas, ctx, lineWidth)
+    }
 
-    canvas.addEventListener('mousedown', handleMouseDown);
-    canvas.addEventListener('mouseup', handleMouseUp);
-    canvas.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('mousedown', handleMouseDown)
+    canvas.addEventListener('mouseup', handleMouseUp)
+    canvas.addEventListener('mousemove', handleMouseMove)
 
     return () => {
-      canvas.removeEventListener('mousedown', handleMouseDown);
-      canvas.removeEventListener('mouseup', handleMouseUp);
-      canvas.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, [lineWidth]);
+      canvas.removeEventListener('mousedown', handleMouseDown)
+      canvas.removeEventListener('mouseup', handleMouseUp)
+      canvas.removeEventListener('mousemove', handleMouseMove)
+    }
+  }, [lineWidth])
 
   useEffect(() => {
     if (clearTrigger) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
-      clearCanvas(canvas, ctx);
-      if (onClearComplete) onClearComplete();
+      const canvas = canvasRef.current
+      const ctx = canvas.getContext('2d')
+      clearCanvas(canvas, ctx)
+      if (onClearComplete) onClearComplete()
     }
-  }, [clearTrigger, onClearComplete]);
+  }, [clearTrigger, onClearComplete])
 
   const handleClear = () => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    clearCanvas(canvas, ctx);
-  };
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
+    clearCanvas(canvas, ctx)
+  }
 
   return (
-    <div className="canvas-container">
+    <div className='canvas-container'>
       <canvas
-        id="canvas"
+        id='canvas'
         ref={canvasRef}
-        width="280"
-        height="280"
+        width='280'
+        height='280'
         style={{ border: '1px solid black' }}
       ></canvas>
-      <div className="button-group">
+      <div className='button-group'>
         {/* <button onClick={() => setLineWidth(5)}>Pencil</button> */}
-        <button onClick={() => setLineWidth(10)}>Ball Pen</button>
+        {/* <button onClick={() => setLineWidth(10)}>Ball Pen</button> */}
         <button onClick={handleClear}>Clear</button>
+
+        <button onClick={handlePredict}>Predict</button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Canvas;
+Canvas.PropTypes = {
+  clearTrigger: PropTypes.func.isRequired,
+  onClearComplete: PropTypes.func.isRequired,
+  handlePredict: PropTypes.func.isRequired
+}
+
+export default Canvas
