@@ -10,7 +10,10 @@ app = Flask(__name__)
 CORS(app)
 
 model = init_model('handwritten_digits_reader.h5')
-
+# limit access to api via exclusive access to frontend fetch requests.
+# redirect every url to /predict even "/"
+# clean data from request ensure it is not dirty or contains unwanted info 
+# which might be harmful.
 @app.route('/predict', methods=['POST'])
 def predict():
     input_data = request.form.get('input')
