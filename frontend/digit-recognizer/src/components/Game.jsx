@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import ArithmeticQuiz from '../utils/arithmeticQuiz' // Adjust path based on your project structure
-import equations from '../data/basic_arithmetic_equations.json' // Import your JSON data
-import Canvas from './Canvas' // Assuming Canvas component is in the same directory
+import ArithmeticQuiz from '../utils/arithmeticQuiz'
+import equations from '../data/basic_arithmetic_equations.json'
+import Canvas from './Canvas'
+import Loading from './Loading'
+import Feedback from './Feedback'
 import { RiHome3Fill } from 'react-icons/ri'
 
 const Game = ({ onBackToHome }) => {
-  const [quizState, setQuizState] = useState('') // State to manage quiz messages
-  const [userAnswer, setUserAnswer] = useState('') // State to manage user's answer
-  const [currentQuestion, setCurrentQuestion] = useState('') // State to manage current quiz question
-  const [quiz, setQuiz] = useState(null) // State to manage the quiz instance
-  const [clearCanvasTrigger, setClearCanvasTrigger] = useState(false) // State to manage canvas clearing
+  const [quizState, setQuizState] = useState('')
+  const [userAnswer, setUserAnswer] = useState('')
+  const [currentQuestion, setCurrentQuestion] = useState('')
+  const [quiz, setQuiz] = useState(null)
+  const [clearCanvasTrigger, setClearCanvasTrigger] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [feedback, setFeedback] = useState({ show: false, isCorrect: false })
 
   useEffect(() => {
-    startQuiz() // Start quiz when component mounts
+    startQuiz()
   }, [])
 
   const updateQuizState = message => {
@@ -23,11 +27,12 @@ const Game = ({ onBackToHome }) => {
   const startQuiz = () => {
     const newQuiz = new ArithmeticQuiz(equations, updateQuizState)
     setQuiz(newQuiz)
-    setCurrentQuestion(newQuiz.getCurrentQuestion()) // Set initial quiz question
-    setClearCanvasTrigger(true) // Clear canvas when quiz starts
+    setCurrentQuestion(newQuiz.getCurrentQuestion())
+    setClearCanvasTrigger(true)
   }
 
   const handlePredict = () => {
+    setLoading(true)
     const canvas = document.getElementById('canvas')
     const imgData = canvas.toDataURL('image/png')
     const img = new Image()
@@ -45,7 +50,7 @@ const Game = ({ onBackToHome }) => {
       const input = []
       for (let i = 0; i < data.length; i += 4) {
         const grayscale = (data[i] + data[i + 1] + data[i + 2]) / 3
-        input.push(255 - grayscale) // Invert colors
+        input.push(255 - grayscale)
       }
 
       const formData = new FormData()
@@ -57,29 +62,38 @@ const Game = ({ onBackToHome }) => {
       })
         .then(response => response.json())
         .then(data => {
-          setUserAnswer(data.digit) // Set predicted digit as user answer
+          setUserAnswer(data.digit)
           if (quiz) {
-            const isCorrect = quiz.checkAnswer(data.digit) // Check the current question's answer
+            const isCorrect = quiz.checkAnswer(data.digit)
+            setFeedback({ show: true, isCorrect })
             if (isCorrect || quiz.remainingAttempts === 0) {
-              setClearCanvasTrigger(true) // Trigger canvas clearing
+              setClearCanvasTrigger(true)
             }
             if (!quiz.currentQuestion) {
-              setCurrentQuestion(quiz.getCurrentQuestion()) // Set the next question
+              setCurrentQuestion(quiz.getCurrentQuestion())
             } else {
-              setCurrentQuestion(quiz.currentQuestion[0]) // Stay on the current question
+              setCurrentQuestion(quiz.currentQuestion[0])
             }
           }
+          setLoading(false)
         })
-        .catch(error => console.error('Error:', error))
+        .catch(error => {
+          console.error('Error:', error)
+          setLoading(false)
+        })
     }
   }
 
   const handleClearComplete = () => {
-    setClearCanvasTrigger(false) // Reset clear canvas trigger
+    setClearCanvasTrigger(false)
+  }
+
+  const removeFeedback = () => {
+    setFeedback({ show: false, isCorrect: false })
   }
 
   return (
-    <div className='game-container' style={{ margin: 'auto' }}>
+    <div className='game-container' style={{ margin: 'auto', position: 'relative' }}>
       <button id='home' onClick={onBackToHome}>
         <RiHome3Fill />
       </button>
@@ -92,9 +106,11 @@ const Game = ({ onBackToHome }) => {
       />
       <hr />
       <div id='predicted'>
-        <p>Predicted Answer: {userAnswer}</p> {/* Display predicted answer */}
-        <div id='result'>{quizState}</div> {/* Display quiz state message */}
+        <p>Predicted Answer: {userAnswer}</p>
+        <div id='result'>{quizState}</div>
       </div>
+      {loading && <Loading />}
+      {feedback.show && <Feedback isCorrect={feedback.isCorrect} onRemove={removeFeedback} />}
     </div>
   )
 }
