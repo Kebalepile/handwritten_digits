@@ -15,14 +15,67 @@
   min-width: 250px;
   margin: auto;
   text-align: center;
+  background-image: url('./assets/icon (1).jpg');
+  background-size: cover;
+  background-position: center;
+  color: black;
+}
+.container > div {
+  backdrop-filter: blur(1px);
+}
+.container  button {
+  animation: radiate 1.5s infinite;
+}
+@keyframes radiate {
+  0% {
+    box-shadow: 0 0 0 0 #007bff;
+  }
+  70% {
+    box-shadow: 0 0 2px 2px #007bff;
+  }
+  100% {
+    box-shadow: 0 0 0 0 #007bff;
+  }
 }
 
-#canvas {
-  border: 1px solid black;
+.canvas-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+}
+
+canvas {
+  border: 1px solid #000;
+  width: 300px;
+  height: 300px;
+  border-radius: 4px;
 }
 
 .button-group {
-  margin: 10px 0;
+  width: 200px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button-group button {
+  margin: 0 5px;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  font-size: 13px;
+}
+
+.button-group button:hover {
+  background-color: #0056b3;
 }
 
 button {
@@ -34,6 +87,27 @@ button {
   border-radius: 4px;
   cursor: pointer;
 }
+
+#home {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  margin: auto;
+}
+
+#clear {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  background: none;
+}
+#home  svg {
+  height: 50px;
+  width: 50px;
+  margin: auto;
+  padding: 0;
+}
+
 #start-button {
   width: 100px;
 }
@@ -53,52 +127,63 @@ button {
 }
 #root {
   height: 100dvh;
+}
+
+#home-page {
+  margin: auto;
+  padding: 50px;
+}
+#home-page {
+  margin: auto;
   padding: 50px;
 }
 
-.footer{
+/* Media query for screens with a max width of 375px */
+@media (max-width: 375px) {
+  #home-page {
+    padding: 50px 0 0 0;
+  }
+}
+
+.footer {
   display: flex;
   justify-content: center;
   align-items: center;
- 
   flex-flow: column nowrap;
   margin: 20px auto auto auto;
 }
 .footer a {
   color: white;
   text-decoration: none;
-
 }
 
 .footer > hr {
-  width:80%;
-  height:1px;
+  width: 80%;
+  height: 1px;
   border-radius: 5px;
-  background:rgb(87, 85, 85);
-  border:none;
+  background: rgb(87, 85, 85);
+  border: none;
 }
 
 .dialog-content {
   background-image: url('./assets/icon (4).jpg');
   background-size: cover;
   background-position: center;
-  margin-top:120px;
+  margin-top: 120px;
   padding: 20px;
-  color:white;
-  width:80%;
-  border:none;
+  color: white;
+  width: 80%;
+  border: none;
   border-radius: 4px;
-  padding:5px;
+  padding: 5px;
 }
 
 .dialog-content > article {
-  margin:auto;
+  margin: auto;
   backdrop-filter: blur(8px); /* Adjust blur intensity as needed */
   background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
-  /* width: inherit; */
-  height:300px;
+  height: 300px;
   overflow: auto;
   border-radius: inherit;
-  padding:10px;
-  
+  padding: 10px;
 }

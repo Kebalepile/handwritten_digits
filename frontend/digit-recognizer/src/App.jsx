@@ -17,7 +17,7 @@ const App = () => {
   const handleBackToHome = () => setScreen('welcome')
 
   return (
-    <div>
+    <div id="home-page">
       {screen === 'welcome' && (
         <>
           <section id='banner'>

@@ -8,12 +8,12 @@ export function clearCanvas(canvas, ctx) {
   initializeCanvas(canvas, ctx);
 }
 
-export function drawOnCanvas(event, canvas, ctx, lineWidth) {
+export function drawOnCanvas(prevPos, currentPos, ctx, lineWidth) {
   ctx.lineWidth = lineWidth;
   ctx.lineCap = 'round';
   ctx.strokeStyle = 'black';
-  ctx.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
-  ctx.stroke();
   ctx.beginPath();
-  ctx.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+  ctx.moveTo(prevPos.x, prevPos.y);
+  ctx.lineTo(currentPos.x, currentPos.y);
+  ctx.stroke();
 }
