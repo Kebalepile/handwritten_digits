@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const Welcome = ({ onStartGame }) => {
   return (
@@ -9,17 +9,17 @@ const Welcome = ({ onStartGame }) => {
         <button id='start-button' onClick={onStartGame}>
           Start
         </button>
-      </div>{' '}
+      </div>
       {/* <button onClick={onViewProgress}>View Progress</button> */}
       {/* <button onClick={onViewAchievements}>View Achievements</button> */}
     </div>
-  )
-}
+  );
+};
 
-Welcome.PropTypes = {
-  onStartGame: PropTypes.func.isRequired
+Welcome.propTypes = {
+  onStartGame: PropTypes.func.isRequired,
   // onViewProgress: PropTypes.func.isRequired,
   // onViewAchievements: PropTypes.func.isRequired
-}
+};
 
-export default Welcome
+export default Welcome;

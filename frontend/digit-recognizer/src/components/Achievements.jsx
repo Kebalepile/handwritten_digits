@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const Achievements = ({ onBackToHome }) => {
   return (
@@ -8,10 +8,11 @@ const Achievements = ({ onBackToHome }) => {
       <div id='achievements-details'></div>
       <button onClick={onBackToHome}>Back to Home</button>
     </div>
-  )
-}
+  );
+};
 
-Achievements.PropTypes = {
+Achievements.propTypes = {
   onBackToHome: PropTypes.func.isRequired
-}
-export default Achievements
+};
+
+export default Achievements;

@@ -11,7 +11,7 @@ const Progress = ({ onBackToHome }) => {
   )
 }
 
-Progress.PropTypes = {
+Progress.propTypes = {
   onBackToHome: PropTypes.func.isRequired
 }
 

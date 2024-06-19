@@ -2,11 +2,9 @@ function CreateRandomShape() {
   const shape = document.createElement("div");
   shape.classList.add("shape");
 
-  // Calculate safe boundaries
-  const safeWidth = window.innerWidth - 100; // Subtract 100px for padding
-  const safeHeight = window.innerHeight - 100; // Subtract 100px for padding
-
   // Random position within safe boundaries
+  const safeWidth = window.innerWidth - 100; // Adjust as needed
+  const safeHeight = window.innerHeight - 100; // Adjust as needed
   const x = Math.random() * safeWidth;
   const y = Math.random() * safeHeight;
   shape.style.left = `${x}px`;
@@ -29,10 +27,12 @@ function CreateRandomShape() {
 
   // Remove the shape after the animation ends
   shape.addEventListener("animationend", () => {
-    document.body.removeChild(shape);
+    shape.parentNode.removeChild(shape);
   });
 
-  document.body.appendChild(shape);
+  const root = document.getElementById("root");
+  root.appendChild(shape);
 }
+
 
 export default CreateRandomShape;

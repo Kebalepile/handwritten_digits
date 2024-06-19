@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import ArithmeticQuiz from '../utils/arithmeticQuiz' // Adjust the path based on your project structure
-import CreateRandomShape from '../utils/animation'
+import PropTypes from 'prop-types'
+import ArithmeticQuiz from '../utils/arithmeticQuiz' // Adjust path based on your project structure
 import equations from '../data/basic_arithmetic_equations.json' // Import your JSON data
 import Canvas from './Canvas' // Assuming Canvas component is in the same directory
-import PropTypes from 'prop-types'
 import { RiHome3Fill } from 'react-icons/ri'
 
 const Game = ({ onBackToHome }) => {
@@ -15,18 +14,10 @@ const Game = ({ onBackToHome }) => {
 
   useEffect(() => {
     startQuiz() // Start quiz when component mounts
-    const intervalId = setInterval(CreateRandomShape, 500);
-
-    // Clean up interval on component unmount
-    return () => clearInterval(intervalId);
   }, [])
 
   const updateQuizState = message => {
     setQuizState(message)
-    const intervalId = setInterval(CreateRandomShape, 500);
-
-    // Clean up interval on component unmount
-    return () => clearInterval(intervalId);
   }
 
   const startQuiz = () => {
@@ -66,7 +57,6 @@ const Game = ({ onBackToHome }) => {
       })
         .then(response => response.json())
         .then(data => {
-          // console.log('Predicted digit: ' + data.digit);
           setUserAnswer(data.digit) // Set predicted digit as user answer
           if (quiz) {
             const isCorrect = quiz.checkAnswer(data.digit) // Check the current question's answer
@@ -89,17 +79,18 @@ const Game = ({ onBackToHome }) => {
   }
 
   return (
-    <div className='containerr' style={{margin:"auto"}}>
+    <div className='game-container' style={{ margin: 'auto' }}>
       <button id='home' onClick={onBackToHome}>
         <RiHome3Fill />
       </button>
       <h2 id='problem'>Problem: {currentQuestion}</h2>
+      <hr />
       <Canvas
         clearTrigger={clearCanvasTrigger}
         onClearComplete={handleClearComplete}
         handlePredict={handlePredict}
       />
-
+      <hr />
       <div id='predicted'>
         <p>Predicted Answer: {userAnswer}</p> {/* Display predicted answer */}
         <div id='result'>{quizState}</div> {/* Display quiz state message */}
@@ -107,7 +98,8 @@ const Game = ({ onBackToHome }) => {
     </div>
   )
 }
-Game.PropTypes = {
+
+Game.propTypes = {
   onBackToHome: PropTypes.func.isRequired
 }
 
