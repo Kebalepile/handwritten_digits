@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import ArithmeticQuiz from '../utils/ArithmeticQuiz' // Adjust the path based on your project structure
+import ArithmeticQuiz from '../utils/arithmeticQuiz' // Adjust the path based on your project structure
+import CreateRandomShape from '../utils/animation'
 import equations from '../data/basic_arithmetic_equations.json' // Import your JSON data
 import Canvas from './Canvas' // Assuming Canvas component is in the same directory
 import PropTypes from 'prop-types'
@@ -14,10 +15,18 @@ const Game = ({ onBackToHome }) => {
 
   useEffect(() => {
     startQuiz() // Start quiz when component mounts
+    const intervalId = setInterval(CreateRandomShape, 500);
+
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId);
   }, [])
 
   const updateQuizState = message => {
     setQuizState(message)
+    const intervalId = setInterval(CreateRandomShape, 500);
+
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId);
   }
 
   const startQuiz = () => {
