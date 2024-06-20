@@ -8,8 +8,8 @@ import Feedback from './Feedback'
 import { RiHome3Fill } from 'react-icons/ri'
 
 const Game = ({ onBackToHome }) => {
-  const [quizState, setQuizState] = useState('')
-  const [userAnswer, setUserAnswer] = useState('')
+  const [responseMessage, setResponseMessage] = useState('')
+  const [predictedAnswer, setPredictedAnswer] = useState('')
   const [currentQuestion, setCurrentQuestion] = useState('')
   const [quiz, setQuiz] = useState(null)
   const [clearCanvasTrigger, setClearCanvasTrigger] = useState(false)
@@ -20,12 +20,12 @@ const Game = ({ onBackToHome }) => {
     startQuiz()
   }, [])
 
-  const updateQuizState = message => {
-    setQuizState(message)
+  const updateResponseMessage = message => {
+    setResponseMessage(message)
   }
 
   const startQuiz = () => {
-    const newQuiz = new ArithmeticQuiz(equations, updateQuizState)
+    const newQuiz = new ArithmeticQuiz(equations, updateResponseMessage)
     setQuiz(newQuiz)
     setCurrentQuestion(newQuiz.getCurrentQuestion())
     setClearCanvasTrigger(true)
@@ -62,7 +62,7 @@ const Game = ({ onBackToHome }) => {
       })
         .then(response => response.json())
         .then(data => {
-          setUserAnswer(data.digit)
+          setPredictedAnswer(data.digit)
           if (quiz) {
             const isCorrect = quiz.checkAnswer(data.digit)
             setFeedback({ show: true, isCorrect })
@@ -93,7 +93,10 @@ const Game = ({ onBackToHome }) => {
   }
 
   return (
-    <div className='game-container' style={{ margin: 'auto', position: 'relative' }}>
+    <div
+      className='game-container'
+      style={{ margin: 'auto', position: 'relative' }}
+    >
       <button id='home' onClick={onBackToHome}>
         <RiHome3Fill />
       </button>
@@ -104,13 +107,16 @@ const Game = ({ onBackToHome }) => {
         onClearComplete={handleClearComplete}
         handlePredict={handlePredict}
       />
-      <hr />
-      <div id='predicted'>
-        <p>Predicted Answer: {userAnswer}</p>
-        <div id='result'>{quizState}</div>
-      </div>
+
       {loading && <Loading />}
-      {feedback.show && <Feedback isCorrect={feedback.isCorrect} onRemove={removeFeedback} />}
+      {feedback.show && (
+        <Feedback
+          isCorrect={feedback.isCorrect}
+          onRemove={removeFeedback}
+          predictedAnswer={predictedAnswer}
+          responseMessage={responseMessage}
+        />
+      )}
     </div>
   )
 }
