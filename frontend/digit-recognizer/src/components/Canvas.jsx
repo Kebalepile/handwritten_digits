@@ -96,7 +96,7 @@ const Canvas = ({ clearTrigger, onClearComplete, handlePredict }) => {
         <button id='clear' title='Clear canvas' onClick={handleClear}>
           <AiOutlineClear style={{ width: '60px', height: '30px' }} />
         </button>
-        <button onClick={handlePredict}>Predict</button>
+        <button onClick={handlePredict}>Answer</button>
       </div>
     </div>
   )
