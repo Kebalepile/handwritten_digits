@@ -12,7 +12,7 @@ class ArithmeticQuiz {
 
   getRandomEquation() {
     if (this.unaskedQuestions.length === 0) {
-      console.log("No more questions available.");
+      // console.log("No more questions available.");
       this.updateQuizState("No more questions available.");
       return null;
     }
@@ -47,7 +47,7 @@ class ArithmeticQuiz {
 
       if (!isValid && this.remainingAttempts > 1) {
         // console.log("Incorrect answer. Please try again.");
-        this.updateQuizState("Incorrect answer. Please try again.");
+        this.updateQuizState("Please try again.");
         this.remainingAttempts--;
         return false;
       } else if (!isValid) {
@@ -55,7 +55,7 @@ class ArithmeticQuiz {
         //   `Incorrect answer. The correct answer is ${this.currentQuestion[1]}.`
         // );
         this.updateQuizState(
-          `Incorrect answer. The correct answer is ${this.currentQuestion[1]}`
+          `Correct answer was :\n  ${this.currentQuestion[1]}`
         );
         this.unaskedQuestions.push(this.currentQuestion); // Push question back to unasked list
         this.remainingAttempts = 3; // Reset remaining attempts for next question

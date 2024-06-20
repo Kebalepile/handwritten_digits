@@ -16,7 +16,7 @@ const Feedback = ({
     <div className={`feedback ${isCorrect ? 'correct' : 'incorrect'}`}>
       {isCorrect ? '✔️' : '❌'}
       <div id='predicted'>
-        {!isCorrect && <p>predicted answer: {predictedAnswer}</p>}
+        {!isCorrect && <p>It's like you wrote: {predictedAnswer} , 🤔</p>}
         <div id='result'>{responseMessage}</div>
       </div>
     </div>
@@ -27,6 +27,6 @@ Feedback.propTypes = {
   isCorrect: PropTypes.bool.isRequired,
   onRemove: PropTypes.func.isRequired,
   responseMessage: PropTypes.string.isRequired,
-  predictedAnswer: PropTypes.string.isRequired
+  predictedAnswer: PropTypes.number.isRequired
 }
 export default Feedback
