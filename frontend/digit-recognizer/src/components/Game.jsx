@@ -74,7 +74,10 @@ const Game = ({ onBackToHome }) => {
   
       fetch('http://localhost:5000/predict', {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        }
       })
         .then(response => response.json())
         .then(data => {
