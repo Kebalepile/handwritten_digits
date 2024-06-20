@@ -12,6 +12,22 @@ This project demonstrates the application of deep learning techniques, specifica
 
 - **Model Saving and Deployment**: After training, the model is saved as an HDF5 file (`mnist_model.h5`) and can be downloaded for future use or deployment in applications requiring digit recognition.
 
+## Handwritten Digits Recognition API
+
+### Features
+
+- **Rate Limiting**: The API limits requests to 50 per hour and 200 per day to manage server load and prevent abuse.
+  
+### Usage
+
+- Ideal for integrating digit recognition capabilities into web applications or services.
+- Provides a RESTful endpoint (`/predict`) to receive images of handwritten digits in JSON format and returns predictions.
+
+### Benefits
+
+- Demonstrates practical implementation of CNNs for real-world applications.
+- Enables seamless integration with frontend applications for real-time digit recognition.
+
 ## Usage
 
 - This project is ideal for understanding the basics of image classification using deep learning, specifically for recognizing handwritten digits.
