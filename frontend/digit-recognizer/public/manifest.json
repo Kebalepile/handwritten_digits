@@ -1,0 +1,32 @@
+{
+  "short_name": "Dipalo Tsa Motheo",
+  "name": "Dipalo Tsa Motheo",
+  "description": "Dipalo Tsa Motheo: Interactive number learning game for children aged 4-10. Metshameko ya go ithuta dipalo go bana ba dingwaga tse 4-10. Practice handwriting and basic arithmetic with fun quizzes and engaging activities. Tokafatsa bokgoni jwa ngwana wa gago mo dipalong ka Dipalo Tsa Motheo.",
+  "author": "K.T Motshoana",
+  "lang": "en-US",
+  "start_url": ".",
+  "background_color": "#ebf3eb",
+  "theme_color": "#ffff00",
+  "scope": "/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "./assets/web_app_icons/144.jpg",
+      "type": "image/png",
+      "sizes": "144x144",
+      "purpose": " maskable any"
+    },
+    {
+      "src": "./assets/web_app_icons/192.jpg",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": " maskable any"
+    },
+    {
+      "src": "./assets/web_app_icons/512.jpg",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": " maskable any"
+    }
+  ]
+}
