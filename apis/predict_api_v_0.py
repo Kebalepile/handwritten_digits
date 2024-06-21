@@ -13,7 +13,7 @@ from flask_limiter.util import get_remote_address
 app = Flask(__name__)
 
 # Enable CORS (Cross-Origin Resource Sharing) for the '/predict' endpoint
-CORS(app, resources={r"/predict": {"origins": "http://localhost:5173"}})
+CORS(app, resources={r"/predict": {"origins": "https://dipalo-tsa-motheo.github.io/"}})
 
 # Rate limiting configuration: 200 requests per day, 50 requests per hour
 limiter = Limiter(get_remote_address, app=app, default_limits=["200 per day", "50 per hour"])
@@ -66,7 +66,3 @@ def health_check():
     response = jsonify({'status': 'ok'})
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
-
-# Start the Flask application
-if __name__ == '__main__':
-    app.run(debug=True)

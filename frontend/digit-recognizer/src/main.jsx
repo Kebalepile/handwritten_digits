@@ -10,7 +10,7 @@ if ("serviceWorker" in navigator) {
     //   ./src/serviceWorker.js for development
     // ./serviceWorker.js for Production
     navigator.serviceWorker
-      .register("./src/sw.js")
+      .register("./sw.js")
       .then((registration) => {
         console.log("service worker registered as: ", registration.scope);
       })
