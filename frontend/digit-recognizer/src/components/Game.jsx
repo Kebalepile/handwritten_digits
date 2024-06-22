@@ -71,19 +71,16 @@ const Game = ({ onBackToHome }) => {
 
       const formData = new FormData()
       formData.append('input', JSON.stringify(input))
-      // development
-      // http://localhost:5000/predict
-      // production
-      // https://dipalo-tsa-motheo-api.onrender.com/predict
+      // development => http://localhost:5000/predict
+      // production => https://dipalo-tsa-motheo-api.onrender.com/predict
       fetch('https://dipalo-tsa-motheo-api.onrender.com/predict', {
         method: 'POST',
-        body: formData,
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        }
+        body: formData
       })
         .then(response => response.json())
         .then(data => {
+          console.log(data)
+          console.log(data.digit)
           setPredictedAnswer(data.digit)
           if (quiz) {
             const isCorrect = quiz.checkAnswer(data.digit)
